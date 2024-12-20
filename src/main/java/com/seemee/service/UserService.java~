@@ -1,0 +1,4 @@
+package com.seemee.service;
+
+public interface UserService {
+}

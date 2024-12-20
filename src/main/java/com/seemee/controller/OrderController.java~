@@ -1,0 +1,45 @@
+package com.seemee.controller;
+
+import com.seemee.dto.OrderDTO;
+import com.seemee.dto.OrderRequest;
+import com.seemee.model.OrderStatus;
+import com.seemee.service.OrderService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/orders")
+@RequiredArgsConstructor
+public class OrderController {
+    private final OrderService orderService;
+
+    @PostMapping
+    public ResponseEntity<OrderDTO> createOrder(
+            @RequestBody OrderRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(orderService.createOrder(request, userDetails.getUsername()));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<OrderDTO>> getUserOrders(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(orderService.getUserOrders(userDetails.getUsername()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.getOrder(id));
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<OrderDTO> updateOrderStatus(
+            @PathVariable Long id,
+            @RequestBody OrderStatus status) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
+    }
+}
