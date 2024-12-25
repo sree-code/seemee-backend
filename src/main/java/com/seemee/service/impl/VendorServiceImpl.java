@@ -20,38 +20,15 @@ import java.util.logging.Logger;
 
 @Service
 public class VendorServiceImpl implements VendorService {
+
+    Logger logger = Logger.getLogger(VendorServiceImpl.class.getName());
+
     @Autowired
     VendorRepository vendorRepository;
-    Logger logger = Logger.getLogger(VendorServiceImpl.class.getName());
-    // Method to query vendors by street name
+
+    @Override
     public List<VendorShops> getVendorsByStreetName(String streetName) {
-        logger.info("StreetName"+ streetName);
-        List<VendorShops> vendorList = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        try (MongoClient client = MongoDBConnection.connect()){
-
-            // Get the database
-             MongoDatabase database = MongoDBConnection.getDatabase(client, SeeMeeConstants.SeeMee);
-
-            // Get the collection
-            MongoCollection<Document> collection = database.getCollection(SeeMeeConstants.vendor);
-
-            // Query for vendors with the given street name
-            MongoCursor<Document> cursor = collection.find(
-                    new Document("vendorAddress.streetName", streetName)
-            ).iterator();
-
-            for (MongoCursor<Document> it = cursor; it.hasNext(); ) {
-                Document doc = it.next();
-                VendorShops vendor = objectMapper.readValue(doc.toJson(), VendorShops.class);
-                vendorList.add(vendor);
-            }
-        } catch (Exception e) {
-            logger.info("Exception: " + e.getMessage());
-        }
-
-        return vendorList;
+        return vendorRepository.getVendorsByStreetName(streetName);
     }
 
 }

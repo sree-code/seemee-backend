@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface VendorRepository extends MongoRepository<VendorShops, String> {
-    // Custom query to find vendors by street name
-    @Query("{'vendorAddress.streetName': ?0 }")
-    List<VendorShops> findByStreetName(String streetName);
+public interface VendorRepository{
+    List<VendorShops> getVendorsByStreetName(String streetName);
 }
